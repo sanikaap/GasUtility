@@ -1,0 +1,118 @@
+<!-- customer_service/templates/customer_service/staff/dashboard.html -->
+{% extends 'customer_service/base.html' %}
+
+{% block title %}Staff Dashboard - Gas Utility{% endblock %}
+
+{% block content %}
+<h2>Customer Service Dashboard</h2>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">Pending Requests ({{ pending_requests.count }})</h5>
+            </div>
+            <div class="card-body">
+                {% if pending_requests %}
+                    <div class="list-group">
+                        {% for request in pending_requests %}
+                            <a href="{% url 'staff_service_request_detail' request.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ request.title }}</h6>
+                                    <small>{{ request.created_at|date:"M d" }}</small>
+                                </div>
+                                <p class="mb-1 small">{{ request.description|truncatewords:10 }}</p>
+                                <small class="text-muted">{{ request.customer.user.get_full_name|default:request.customer.user.username }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No pending requests</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">In Progress ({{ in_progress_requests.count }})</h5>
+            </div>
+            <div class="card-body">
+                {% if in_progress_requests %}
+                    <div class="list-group">
+                        {% for request in in_progress_requests %}
+                            <a href="{% url 'staff_service_request_detail' request.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ request.title }}</h6>
+                                    <small>{{ request.created_at|date:"M d" }}</small>
+                                </div>
+                                <p class="mb-1 small">{{ request.description|truncatewords:10 }}</p>
+                                <small class="text-muted">Assigned to: {{ request.assigned_to.get_full_name|default:request.assigned_to.username }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No requests in progress</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Resolved Requests ({{ resolved_requests.count }})</h5>
+            </div>
+            <div class="card-body">
+                {% if resolved_requests %}
+                    <div class="list-group">
+                        {% for request in resolved_requests %}
+                            <a href="{% url 'staff_service_request_detail' request.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ request.title }}</h6>
+                                    <small>{{ request.resolved_at|date:"M d" }}</small>
+                                </div>
+                                <p class="mb-1 small">{{ request.description|truncatewords:10 }}</p>
+                                <small class="text-muted">Resolved by: {{ request.resolved_by.get_full_name|default:request.resolved_by.username }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No resolved requests</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Quick Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h3>{{ total_requests }}</h3>
+                        <p class="text-muted">Total Requests</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3>{{ pending_requests.count }}</h3>
+                        <p class="text-muted">Pending</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3>{{ in_progress_requests.count }}</h3>
+                        <p class="text-muted">In Progress</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3>{{ resolved_requests.count }}</h3>
+                        <p class="text-muted">Resolved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

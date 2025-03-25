@@ -1,0 +1,49 @@
+{% extends 'customer_service/base.html' %}
+
+{% block title %}Customer Dashboard - Gas Utility{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>My Service Requests</h2>
+        <a href="{% url 'create_service_request' %}" class="btn btn-primary mb-3">Create New Request</a>
+        
+        {% if service_requests %}
+            <div class="list-group">
+                {% for request in service_requests %}
+                    <a href="{% url 'service_request_detail' request.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ request.title }}</h5>
+                            <small>{{ request.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <p class="mb-1">{{ request.description|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between">
+                            <small>Type: {{ request.request_type.name }}</small>
+                            <span class="badge bg-{% if request.status == 'pending' %}warning{% elif request.status == 'in_progress' %}info{% elif request.status == 'resolved' %}success{% else %}secondary{% endif %}">
+                                {{ request.get_status_display }}
+                            </span>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                You don't have any service requests yet. <a href="{% url 'create_service_request' %}">Create your first request</a>.
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <h3>Account Information</h3>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ customer.user.first_name }} {{ customer.user.last_name }}</h5>
+                <p class="card-text"><strong>Customer ID:</strong> {{ customer.customer_id }}</p>
+                <p class="card-text"><strong>Address:</strong><br>{{ customer.address }}</p>
+                <p class="card-text"><strong>Phone:</strong> {{ customer.phone_number }}</p>
+                <p class="card-text"><strong>Email:</strong> {{ customer.user.email }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
